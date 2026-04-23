@@ -1,0 +1,31 @@
+:root {
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Lato", "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: var(--font-display);
+}
+
+p,
+li,
+a,
+button,
+input,
+textarea,
+select,
+label,
+.font-body {
+  font-family: var(--font-body);
+}

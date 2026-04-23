@@ -1,0 +1,47 @@
+<svg width="100%" viewBox="0 0 680 390" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Alatike Pro logo with Yoruba diacritics and English tagline</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Luxury dark emblem logo for Alatike Pro with Yoruba accented wordmark and English tagline on deep mocha background</desc>
+
+  <defs>
+    
+  </defs>
+  <!-- ── TOP ARC ORNAMENT ── -->
+  <path d="M265 128 Q340 80 415 128" fill="none" stroke="#FAF1EA" stroke-width="1.2" stroke-linecap="round" style="fill:none;stroke:rgb(250, 241, 234);color:rgb(255, 255, 255);stroke-width:1.2px;stroke-linecap:round;stroke-linejoin:miter;opacity:0.96;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Three dots on arc -->
+  <circle cx="293" cy="111" r="2.8" fill="#FAF1EA" style="fill:rgb(250, 241, 234);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.96;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="340" cy="94" r="3.8" fill="#FAF1EA" style="fill:rgb(250, 241, 234);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.96;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="387" cy="111" r="2.8" fill="#FAF1EA" style="fill:rgb(250, 241, 234);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.96;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Tick lines between dots -->
+  <line x1="316" y1="102" x2="317" y2="107" stroke="#FAF1EA" stroke-width="0.9" stroke-linecap="round" style="fill:rgb(0, 0, 0);stroke:rgb(250, 241, 234);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:round;stroke-linejoin:miter;opacity:0.96;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="364" y1="102" x2="363" y2="107" stroke="#FAF1EA" stroke-width="0.9" stroke-linecap="round" style="fill:rgb(0, 0, 0);stroke:rgb(250, 241, 234);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:round;stroke-linejoin:miter;opacity:0.96;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Horizontal rules flanking arc -->
+  <line x1="90" y1="128" x2="257" y2="128" stroke="#FAF1EA" stroke-width="0.8" style="fill:rgb(0, 0, 0);stroke:rgb(250, 241, 234);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.92;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="423" y1="128" x2="590" y2="128" stroke="#FAF1EA" stroke-width="0.8" style="fill:rgb(0, 0, 0);stroke:rgb(250, 241, 234);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.92;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="90" cy="128" r="1.8" fill="#FAF1EA" style="fill:rgb(250, 241, 234);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.92;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="590" cy="128" r="1.8" fill="#FAF1EA" style="fill:rgb(250, 241, 234);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.92;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- ── MAIN WORDMARK — Yoruba diacritics ── -->
+  <text x="340" y="222" text-anchor="middle" font-size="74" font-weight="600" letter-spacing="8" fill="#FFF9F4" style="fill:rgb(255, 249, 244);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Cormorant Garamond&quot;, Georgia, serif;font-size:74px;font-weight:600;text-anchor:middle;dominant-baseline:auto">ÀLÁTIKẸ</text>
+
+  <!-- Subtle depth shadow -->
+  <text x="342" y="224" text-anchor="middle" font-size="74" font-weight="600" letter-spacing="8" fill="#A48D78" opacity="0.15" style="fill:rgb(164, 141, 120);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.15;font-family:&quot;Cormorant Garamond&quot;, Georgia, serif;font-size:74px;font-weight:600;text-anchor:middle;dominant-baseline:auto">ÀLÁTIKẸ</text>
+
+  <!-- ── DIVIDER ── -->
+  <line x1="90" y1="244" x2="316" y2="244" stroke="#F0E4D6" stroke-width="0.9" style="fill:rgb(0, 0, 0);stroke:rgb(240, 228, 214);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.9;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <polygon points="340,237 349,244 340,251 331,244" fill="#F0E4D6" style="fill:rgb(240, 228, 214);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.95;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="364" y1="244" x2="590" y2="244" stroke="#F0E4D6" stroke-width="0.9" style="fill:rgb(0, 0, 0);stroke:rgb(240, 228, 214);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.9;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- ── PRO ── -->
+  <text x="340" y="282" text-anchor="middle" font-size="15" font-weight="700" letter-spacing="10" fill="#FFF9F4" style="fill:rgb(255, 249, 244);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.98;font-family:Raleway, &quot;Helvetica Neue&quot;, sans-serif;font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:auto">PRO</text>
+
+  <!-- ── English tagline ── -->
+  <text x="340" y="318" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="4.5" fill="#F5EBDD" opacity="0.86" style="fill:rgb(245, 235, 221);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.86;font-family:Raleway, &quot;Helvetica Neue&quot;, sans-serif;font-size:10px;font-weight:500;text-anchor:middle;dominant-baseline:auto">BEAUTY IN EVERY SHADE</text>
+
+  <!-- Bottom ornament -->
+  <line x1="280" y1="336" x2="326" y2="336" stroke="#F0E4D6" stroke-width="0.55" opacity="0.76" style="fill:rgb(0, 0, 0);stroke:rgb(240, 228, 214);color:rgb(255, 255, 255);stroke-width:0.55px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.76;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="340" cy="336" r="2" fill="#F0E4D6" opacity="0.86" style="fill:rgb(240, 228, 214);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.86;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="354" y1="336" x2="400" y2="336" stroke="#F0E4D6" stroke-width="0.55" opacity="0.76" style="fill:rgb(0, 0, 0);stroke:rgb(240, 228, 214);color:rgb(255, 255, 255);stroke-width:0.55px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.76;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+</svg>
