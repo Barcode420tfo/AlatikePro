@@ -68,6 +68,8 @@ export function AboutSection() {
               src={aboutPhoto}
               alt="Adeola, founder of Alatike Pro"
               className="about-photo"
+              loading="lazy"
+              decoding="async"
             />
             <div className="about-photo-grain" aria-hidden="true" />
             <div className={`about-counter-card ${isVisible ? 'is-visible' : ''}`}>

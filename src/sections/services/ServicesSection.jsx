@@ -318,6 +318,8 @@ export function ServicesSection() {
                     alt={service.title}
                     className="service-card-image"
                     style={{ objectPosition: service.imagePosition ?? 'center' }}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="service-card-overlay" aria-hidden="true" />
                   <div className="service-card-topbar">

@@ -5,6 +5,7 @@ import { siteData } from '../../data/site'
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isHeroHeaderSuppressed, setIsHeroHeaderSuppressed] = useState(false)
 
   useEffect(() => {
     const heroSection = document.getElementById('home')
@@ -58,21 +59,69 @@ export function Navbar() {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
+  useEffect(() => {
+    let frameId = 0
+
+    const updateHeaderSuppression = () => {
+      const heroSection = document.getElementById('home')
+      const trustSection = document.getElementById('trust-strip')
+
+      if ((window.innerWidth < 1024 && isMenuOpen) || !heroSection || !trustSection) {
+        setIsHeroHeaderSuppressed(false)
+        return
+      }
+
+      const heroBottom = heroSection.getBoundingClientRect().bottom
+      const trustTop = trustSection.getBoundingClientRect().top
+      const hasMovedIntoHero = window.scrollY > 24
+      const hasLeftHero = heroBottom <= 96
+      const hasReachedTrust = trustTop <= window.innerHeight * 0.82
+
+      setIsHeroHeaderSuppressed(hasMovedIntoHero && !(hasLeftHero && hasReachedTrust))
+    }
+
+    const requestUpdate = () => {
+      if (frameId) {
+        return
+      }
+
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0
+        updateHeaderSuppression()
+      })
+    }
+
+    updateHeaderSuppression()
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', requestUpdate)
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId)
+      }
+
+      window.removeEventListener('scroll', requestUpdate)
+      window.removeEventListener('resize', requestUpdate)
+    }
+  }, [isMenuOpen])
+
+  const isHeaderSuppressed = isHeroHeaderSuppressed && !isMenuOpen
+
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[padding,background-color,box-shadow,border-color] duration-300 ${
+        className={`site-header fixed inset-x-0 top-0 z-50 transition-[padding,background-color,box-shadow,border-color,opacity,transform] duration-300 ${
         isScrolled
           ? 'border-b border-white/10 bg-[#745e4d] py-2.5 shadow-[0_18px_42px_rgba(44,33,24,0.24)]'
           : 'bg-transparent py-3'
-        }`}
+        } ${isHeaderSuppressed ? 'hero-header-hidden border-transparent bg-transparent shadow-none' : ''}`}
       >
         <div className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-5 px-4 sm:px-6 lg:px-10 xl:px-14">
           <a
             href="#home"
-            className={`animate-fade-up block shrink-0 transition-transform duration-300 ${
+            className={`mobile-brand-link animate-fade-up block shrink-0 transition-[transform,opacity] duration-300 ${
               isScrolled ? '-translate-y-1' : '-translate-y-1.5'
-            }`}
+            } ${isHeaderSuppressed ? 'pointer-events-none' : 'opacity-100'}`}
             style={{ animationDelay: '0ms' }}
             aria-label={siteData.brandName}
             onClick={() => setIsMenuOpen(false)}
@@ -87,7 +136,9 @@ export function Navbar() {
           </a>
 
           <nav
-            className="animate-fade-up hidden items-center justify-center gap-6 xl:gap-8 lg:flex"
+            className={`desktop-nav-shell animate-fade-up hidden items-center justify-center gap-6 transition-[transform,opacity] duration-300 xl:gap-8 lg:flex ${
+              isHeaderSuppressed ? 'pointer-events-none' : 'opacity-100'
+            }`}
             style={{ animationDelay: '0ms' }}
             aria-label="Primary navigation"
           >
@@ -100,7 +151,9 @@ export function Navbar() {
 
           <button
             type="button"
-            className={`mobile-nav-toggle justify-self-end ${isMenuOpen ? 'is-open' : ''}`}
+            className={`mobile-nav-toggle justify-self-end transition-[transform,opacity] duration-300 ${isMenuOpen ? 'is-open' : ''} ${
+              isHeaderSuppressed ? 'pointer-events-none' : 'opacity-100'
+            }`}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-nav-overlay"
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}

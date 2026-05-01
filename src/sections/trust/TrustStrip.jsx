@@ -61,6 +61,7 @@ export function TrustStrip() {
 
   return (
     <section
+      id="trust-strip"
       ref={sectionRef}
       className="trust-shell relative z-10 bg-[#faf9f6] px-6 pb-10 pt-5 sm:px-8 sm:pb-12 sm:pt-6 lg:px-12 lg:pb-14 lg:pt-6"
     >

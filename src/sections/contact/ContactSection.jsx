@@ -142,6 +142,8 @@ export function ContactSection() {
                 src={logo}
                 alt={`${siteData.brandName} logo`}
                 className="contact-footer-logo"
+                loading="lazy"
+                decoding="async"
               />
               <p className="contact-footer-note">{siteData.contact.footerNote}</p>
               <p className="contact-footer-about">{siteData.contact.footerAbout}</p>

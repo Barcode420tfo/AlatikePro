@@ -152,6 +152,7 @@ export function GallerySection() {
     }
 
     const previousOverflow = document.body.style.overflow
+    document.body.classList.add('gallery-preview-open')
     document.body.style.overflow = 'hidden'
 
     const handleKeyDown = (event) => {
@@ -163,6 +164,7 @@ export function GallerySection() {
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
+      document.body.classList.remove('gallery-preview-open')
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', handleKeyDown)
     }
@@ -304,6 +306,8 @@ export function GallerySection() {
                     alt={item.title}
                     className="gallery-card-media"
                     style={{ objectPosition: item.position ?? 'center' }}
+                    loading="lazy"
+                    decoding="async"
                   />
                 )}
 
@@ -381,6 +385,7 @@ export function GallerySection() {
                     src={mediaMap[activeLightboxItem.asset]}
                     alt={activeLightboxItem.title}
                     className="gallery-lightbox-asset"
+                    decoding="async"
                   />
                 )}
               </div>

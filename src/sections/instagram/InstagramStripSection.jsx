@@ -77,6 +77,8 @@ export function InstagramStripSection() {
                 alt={tile.alt}
                 className="instagram-tile-image"
                 style={{ objectPosition: tile.position ?? 'center' }}
+                loading="lazy"
+                decoding="async"
               />
               <div className="instagram-tile-overlay" aria-hidden="true">
                 <span className="instagram-tile-icon">{instagramIcon}</span>
