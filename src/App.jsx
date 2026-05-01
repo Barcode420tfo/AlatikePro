@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Navbar } from './components/layout/Navbar'
 import { AboutSection } from './sections/about/AboutSection'
 import { ContactSection } from './sections/contact/ContactSection'
@@ -10,6 +11,16 @@ import { TestimonialsSection } from './sections/testimonials/TestimonialsSection
 import { TrustStrip } from './sections/trust/TrustStrip'
 
 function App() {
+  useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration
+    window.history.scrollRestoration = 'manual'
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#faf9f6] text-[#2c2118]">
       <Navbar />

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
+import { getStaggerDelay } from '../../lib/motion'
 import bridalImage from '../../../media/photos/FTP02639.jpg.jpeg'
 import everydayImage from '../../../media/photos/IMG_1911.PNG'
 import geleImage from '../../../media/photos/IMG_7209.JPEG'
@@ -123,13 +125,15 @@ const initialFormState = {
 }
 
 const bookingDraftStorageKey = 'alatike-pro-booking-draft'
+const SERVICES_CARD_STAGGER_MS = 180
+const serviceWaveOffsets = [-28, -10, 10, 28]
+const serviceWaveTilts = [-1.8, -0.7, 0.7, 1.8]
 
 export function ServicesSection() {
   const bookingEnabled = siteData.services.booking.enabled !== false
   const bookingRecipient = siteData.services.booking.recipientEmail
   const bookingSubmitUrl = `https://formsubmit.co/ajax/${bookingRecipient}`
   const bookingFallbackUrl = `https://formsubmit.co/${bookingRecipient}`
-  const [isVisible, setIsVisible] = useState(false)
   const [formState, setFormState] = useState(() => {
     if (typeof window === 'undefined') {
       return initialFormState
@@ -151,30 +155,12 @@ export function ServicesSection() {
     }
   })
   const [submitState, setSubmitState] = useState('idle')
-  const sectionRef = useRef(null)
+  const [expandedServiceSlug, setExpandedServiceSlug] = useState(null)
+  const { ref: sectionRef, isVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.2,
+  })
   const submitAbortRef = useRef(null)
-
-  useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
-      return undefined
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.18 },
-    )
-
-    observer.observe(node)
-
-    return () => observer.disconnect()
-  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -292,7 +278,7 @@ export function ServicesSection() {
               <span className="services-heading-mask" key={line}>
                 <span
                   className={`services-heading-line ${isVisible ? 'is-visible' : ''}`}
-                  style={{ animationDelay: `${140 + index * 95}ms` }}
+                  style={{ animationDelay: getStaggerDelay(index, 140) }}
                 >
                   {line}
                 </span>
@@ -311,13 +297,20 @@ export function ServicesSection() {
           {siteData.services.items.map((service, index) => {
             const isFlagship = index === 0
             const isAlwaysOpen = isFlagship || service.slug === 'beauty-training'
-            const stageDelay = 620 + index * 85
+            const isMobileOpen = expandedServiceSlug === service.slug
+            const stageDelay = getStaggerDelay(index, 540, SERVICES_CARD_STAGGER_MS)
+            const waveOffset = serviceWaveOffsets[index] ?? 0
+            const waveTilt = serviceWaveTilts[index] ?? 0
 
             return (
               <article
                 key={service.slug}
-                className={`service-card service-card-${service.theme} ${isFlagship ? 'service-card-flagship' : ''} ${isAlwaysOpen ? 'service-card-always-open' : ''} ${isVisible ? 'is-visible' : ''}`}
-                style={{ animationDelay: `${stageDelay}ms` }}
+                className={`service-card service-card-${service.theme} ${isFlagship ? 'service-card-flagship' : ''} ${isAlwaysOpen ? 'service-card-always-open' : ''} ${isMobileOpen ? 'service-card-mobile-open' : ''} ${isVisible ? 'is-visible' : ''}`}
+                style={{
+                  animationDelay: stageDelay,
+                  '--service-wave-x': `${waveOffset}px`,
+                  '--service-wave-tilt': `${waveTilt}deg`,
+                }}
               >
                 <div className="service-card-image-wrap">
                   <img
@@ -337,6 +330,17 @@ export function ServicesSection() {
                     <div className="service-card-overlay-content">
                       <p className="service-card-eyebrow">{service.eyebrow}</p>
                       <h3 className="service-card-title">{service.title}</h3>
+                      <button
+                        type="button"
+                        className="service-card-learn-more"
+                        aria-expanded={isMobileOpen}
+                        aria-controls={`service-mobile-panel-${service.slug}`}
+                        onClick={() =>
+                          setExpandedServiceSlug((current) => (current === service.slug ? null : service.slug))
+                        }
+                      >
+                        {isMobileOpen ? 'Hide details' : 'Learn more'}
+                      </button>
                     </div>
                     <div className="service-card-hover-panel">
                       <p className="service-card-description">{service.description}</p>
@@ -352,6 +356,38 @@ export function ServicesSection() {
                       </a>
                     </div>
                   </div>
+                  <div
+                    id={`service-mobile-panel-${service.slug}`}
+                    className="service-card-mobile-panel"
+                  >
+                    <button
+                      type="button"
+                      className="service-card-close"
+                      aria-label={`Close details for ${service.title}`}
+                      onClick={() => setExpandedServiceSlug(null)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M6 6l12 12M18 6L6 18"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </button>
+                    <p className="service-card-mobile-description">{service.description}</p>
+                    <a
+                      href={`${siteData.whatsappUrl}?text=${encodeURIComponent(service.whatsappMessage)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="service-card-mobile-whatsapp"
+                      aria-label={`WhatsApp enquiry for ${service.title}`}
+                    >
+                      {whatsappIcon}
+                      <span>{service.ctaLabel ?? 'Enquire on WhatsApp'}</span>
+                    </a>
+                  </div>
                   <span className="service-card-accent" aria-hidden="true" />
                 </div>
               </article>
@@ -365,7 +401,7 @@ export function ServicesSection() {
               key={item.label}
               href={item.href}
               className="services-info-cell"
-              style={{ animationDelay: `${900 + index * 60}ms` }}
+              style={{ animationDelay: getStaggerDelay(index, 900) }}
             >
               <span className="services-info-label">{item.label}</span>
               <span className="services-info-value">{item.value}</span>

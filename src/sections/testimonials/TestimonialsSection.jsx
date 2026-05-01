@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
 
 const starIcon = (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -37,32 +38,12 @@ const arrowRightIcon = (
 )
 
 export function TestimonialsSection() {
-  const [isVisible, setIsVisible] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  const sectionRef = useRef(null)
+  const { ref: sectionRef, isVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.28,
+  })
   const items = siteData.testimonials.items
-
-  useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
-      return undefined
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.2 },
-    )
-
-    observer.observe(node)
-
-    return () => observer.disconnect()
-  }, [])
 
   const goToPrevious = () => {
     setActiveIndex((current) => Math.max(0, current - 1))

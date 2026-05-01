@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
 import logo from '../../../assets/alatike_pro_yoruba_v3b.svg'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
 
 const whatsappIcon = (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -49,40 +49,30 @@ const socialIconMap = {
 }
 
 export function ContactSection() {
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef(null)
-
-  useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
-      return undefined
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.18 },
-    )
-
-    observer.observe(node)
-
-    return () => observer.disconnect()
-  }, [])
+  const { ref: ctaRef, isVisible: isCtaVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.24,
+  })
+  const { ref: footerRef, isVisible: isFooterVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.16,
+  })
+  const { ref: footerCreditRef, isVisible: isFooterCreditVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.2,
+  })
+  const [footerHoursPrimary, footerHoursSecondary] = siteData.contact.secondary.hours
+    .split('·')
+    .map((part) => part.trim())
 
   return (
     <section
       id="contact"
-      ref={sectionRef}
       className="contact-shell relative overflow-hidden bg-[#faf1ea] px-7 pb-10 pt-18 text-[#2f2118] sm:px-9 lg:px-14 lg:pb-12 lg:pt-22"
     >
       <div className="mx-auto max-w-[1220px]">
-        <div className="contact-cta-panel">
-          <div className={`contact-kicker ${isVisible ? 'is-visible' : ''}`}>
+        <div ref={ctaRef} className="contact-cta-panel">
+          <div className={`contact-kicker ${isCtaVisible ? 'is-visible' : ''}`}>
             <span className="contact-kicker-line" aria-hidden="true" />
             <span className="contact-kicker-text">{siteData.contact.label}</span>
             <span className="contact-kicker-line" aria-hidden="true" />
@@ -91,7 +81,7 @@ export function ContactSection() {
           <div className="contact-main-grid">
             <div className="contact-copy-column">
               <div className="contact-heading-mask">
-                <h2 className={`contact-heading ${isVisible ? 'is-visible' : ''}`}>
+                <h2 className={`contact-heading ${isCtaVisible ? 'is-visible' : ''}`}>
                   <span className="contact-heading-line contact-heading-line-regular">
                     {siteData.contact.headlineLead}
                   </span>
@@ -101,18 +91,18 @@ export function ContactSection() {
                 </h2>
               </div>
 
-              <p className={`contact-intro ${isVisible ? 'is-visible' : ''}`}>{siteData.contact.intro}</p>
+              <p className={`contact-intro ${isCtaVisible ? 'is-visible' : ''}`}>{siteData.contact.intro}</p>
 
-              <p className={`contact-hours ${isVisible ? 'is-visible' : ''}`}>
+              <p className={`contact-hours ${isCtaVisible ? 'is-visible' : ''}`}>
                 <span className="contact-hours-dot" aria-hidden="true" />
                 <span>{siteData.contact.secondary.hours}</span>
               </p>
             </div>
 
-            <div className={`contact-divider ${isVisible ? 'is-visible' : ''}`} aria-hidden="true" />
+            <div className={`contact-divider ${isCtaVisible ? 'is-visible' : ''}`} aria-hidden="true" />
 
             <div className="contact-actions-column">
-              <div className={`contact-info-stack ${isVisible ? 'is-visible' : ''}`}>
+              <div className={`contact-info-stack ${isCtaVisible ? 'is-visible' : ''}`}>
                 <div className="contact-info-item">
                   <span className="contact-info-label">{siteData.contact.secondary.phoneLabel}</span>
                   <a href="tel:+2347036332149" className="contact-info-value">
@@ -128,7 +118,7 @@ export function ContactSection() {
                 </div>
               </div>
 
-              <div className={`contact-actions ${isVisible ? 'is-visible' : ''}`}>
+              <div className={`contact-actions ${isCtaVisible ? 'is-visible' : ''}`}>
                 <a
                   href={siteData.contact.primaryCta.href}
                   target="_blank"
@@ -144,8 +134,8 @@ export function ContactSection() {
         </div>
       </div>
 
-      <div className="contact-footer-shell">
-        <div className={`contact-footer ${isVisible ? 'is-visible' : ''}`}>
+      <div ref={footerRef} className="contact-footer-shell">
+        <div className={`contact-footer ${isFooterVisible ? 'is-visible' : ''}`}>
           <div className="contact-footer-inner">
             <div className="contact-footer-column contact-footer-brand-col">
               <img
@@ -157,7 +147,7 @@ export function ContactSection() {
               <p className="contact-footer-about">{siteData.contact.footerAbout}</p>
             </div>
 
-            <div className="contact-footer-column">
+            <div className="contact-footer-column contact-footer-links-col">
               <p className="contact-footer-title">Quick Links</p>
               <div className="contact-footer-link-list">
                 {siteData.navItems.map((item) => (
@@ -169,13 +159,31 @@ export function ContactSection() {
             </div>
 
             <div className="contact-footer-column contact-footer-contact-col">
-              <p className="contact-footer-title">Contact</p>
-              <a href="tel:+2347036332149" className="contact-footer-link">
-                {siteData.contact.secondary.phone}
-              </a>
-              <a href={`mailto:${siteData.contact.secondary.email}`} className="contact-footer-link">
-                {siteData.contact.secondary.email}
-              </a>
+              <p className="contact-footer-title">Get In Touch</p>
+              <div className="contact-footer-stack">
+                <div className="contact-footer-info-group">
+                  <p className="contact-footer-label">{siteData.contact.secondary.phoneLabel}</p>
+                  <a href="tel:+2347036332149" className="contact-footer-link contact-footer-link-strong">
+                    {siteData.contact.secondary.phone}
+                  </a>
+                </div>
+
+                <div className="contact-footer-info-group">
+                  <p className="contact-footer-label">{siteData.contact.secondary.emailLabel}</p>
+                  <a href={`mailto:${siteData.contact.secondary.email}`} className="contact-footer-link contact-footer-link-small">
+                    {siteData.contact.secondary.email}
+                  </a>
+                </div>
+
+                <div className="contact-footer-info-group">
+                  <p className="contact-footer-label">Hours</p>
+                  <p className="contact-footer-hours-main">{footerHoursPrimary}</p>
+                  {footerHoursSecondary ? (
+                    <p className="contact-footer-hours-sub">{footerHoursSecondary}</p>
+                  ) : null}
+                </div>
+              </div>
+
               <div className="contact-footer-socials">
                 {siteData.contact.socialLinks.map((social) => (
                   <a
@@ -189,17 +197,39 @@ export function ContactSection() {
                     {socialIconMap[social.label]}
                   </a>
                 ))}
+                <a
+                  href={siteData.whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="contact-footer-social"
+                  aria-label="WhatsApp"
+                >
+                  {whatsappIcon}
+                </a>
               </div>
             </div>
           </div>
+
+          <div className="contact-footer-middle">
+            <p className="contact-footer-quote">“Makeup is not just about appearance — it is about confidence.”</p>
+            <p className="contact-footer-availability">Available on request</p>
+          </div>
         </div>
 
-        <div className={`contact-footer-credit ${isVisible ? 'is-visible' : ''}`}>
+        <div ref={footerCreditRef} className={`contact-footer-credit ${isFooterCreditVisible ? 'is-visible' : ''}`}>
           <div className="contact-footer-credit-inner">
             <span>{siteData.contact.copyright}</span>
-            <a href={`https://${siteData.contact.website}`} target="_blank" rel="noreferrer">
-              {siteData.contact.website}
-            </a>
+            <div className="contact-footer-credit-links">
+              <a href={`https://${siteData.contact.website}`} target="_blank" rel="noreferrer">
+                {siteData.contact.website}
+              </a>
+              <span aria-hidden="true">•</span>
+              <span>Privacy</span>
+              <span aria-hidden="true">•</span>
+              <a href="https://www.instagram.com/alatike_mua" target="_blank" rel="noreferrer">
+                Instagram
+              </a>
+            </div>
           </div>
         </div>
       </div>

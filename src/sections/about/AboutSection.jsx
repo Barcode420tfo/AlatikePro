@@ -1,22 +1,32 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
+import { getStaggerDelay, prefersReducedMotion } from '../../lib/motion'
 import aboutPhoto from '../../../media/photos/about-ceo-adeola-v4.jpeg'
 
 export function AboutSection() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [clientCount, setClientCount] = useState(0)
-  const sectionRef = useRef(null)
+  const reducedMotion = prefersReducedMotion()
+  const [clientCount, setClientCount] = useState(() => (reducedMotion ? 300 : 0))
+  const { ref: sectionRef, isVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.22,
+  })
+  const { ref: quoteRef, isVisible: isQuoteVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.5,
+  })
   const headingWords = siteData.about.headline.split(' ')
 
   useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
+    if (!isVisible) {
       return undefined
     }
 
     let frameId = 0
-    let hasAnimated = false
+
+    if (reducedMotion) {
+      return undefined
+    }
 
     const animateCount = () => {
       const duration = 1200
@@ -36,25 +46,12 @@ export function AboutSection() {
       frameId = window.requestAnimationFrame(step)
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          hasAnimated = true
-          setIsVisible(true)
-          animateCount()
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.22 },
-    )
-
-    observer.observe(node)
+    animateCount()
 
     return () => {
-      observer.disconnect()
       window.cancelAnimationFrame(frameId)
     }
-  }, [])
+  }, [isVisible, reducedMotion])
 
   return (
     <section
@@ -91,7 +88,7 @@ export function AboutSection() {
               <span
                 key={`${word}-${index}`}
                 className="about-headline-word"
-                style={{ animationDelay: `${220 + index * 75}ms` }}
+                style={{ animationDelay: getStaggerDelay(index, 720, 120) }}
               >
                 {word}
                 {index < headingWords.length - 1 ? '\u00A0' : ''}
@@ -104,7 +101,7 @@ export function AboutSection() {
               <span
                 key={stat}
                 className={`about-stat-pill ${isVisible ? 'is-visible' : ''}`}
-                style={{ animationDelay: `${500 + index * 80}ms` }}
+                style={{ animationDelay: getStaggerDelay(index, 500) }}
               >
                 {stat}
               </span>
@@ -121,7 +118,7 @@ export function AboutSection() {
 
           <div className={`about-divider ${isVisible ? 'is-visible' : ''}`} aria-hidden="true" />
 
-          <blockquote className={`about-quote ${isVisible ? 'is-visible' : ''}`}>
+          <blockquote ref={quoteRef} className={`about-quote ${isQuoteVisible ? 'is-visible' : ''}`}>
             <span className="about-quote-accent" aria-hidden="true" />
             <span className="about-quote-text">“{siteData.about.quote}”</span>
           </blockquote>

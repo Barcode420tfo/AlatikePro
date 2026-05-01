@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
+import { getStaggerDelay } from '../../lib/motion'
 
 const chevronIcon = (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -15,31 +17,8 @@ const chevronIcon = (
 )
 
 export function FaqSection() {
-  const [isVisible, setIsVisible] = useState(false)
   const [openIndex, setOpenIndex] = useState(0)
-  const sectionRef = useRef(null)
-
-  useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
-      return undefined
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.18 },
-    )
-
-    observer.observe(node)
-
-    return () => observer.disconnect()
-  }, [])
+  const { ref: sectionRef, isVisible } = useRevealInView()
 
   const handleToggle = (index) => {
     setOpenIndex((current) => (current === index ? -1 : index))
@@ -70,7 +49,7 @@ export function FaqSection() {
               <article
                 key={item.question}
                 className={`faq-item ${isOpen ? 'is-open' : ''}`}
-                style={{ animationDelay: `${index * 60}ms` }}
+                style={{ animationDelay: getStaggerDelay(index) }}
               >
                 <button
                   type="button"

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
+import { getStaggerDelay } from '../../lib/motion'
 import instagram01 from '../../../media/photos/IMG_1911.PNG'
 import instagram02 from '../../../media/photos/IMG_7209.JPEG'
 import instagram03 from '../../../media/photos/everyday-shot-01.PNG'
@@ -28,30 +29,10 @@ const instagramIcon = (
 )
 
 export function InstagramStripSection() {
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef(null)
-
-  useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
-      return undefined
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.18 },
-    )
-
-    observer.observe(node)
-
-    return () => observer.disconnect()
-  }, [])
+  const { ref: sectionRef, isVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.24,
+  })
 
   return (
     <section
@@ -88,7 +69,7 @@ export function InstagramStripSection() {
               target="_blank"
               rel="noreferrer"
               className={`instagram-tile ${isVisible ? 'is-visible' : ''}`}
-              style={{ animationDelay: `${index * 70}ms` }}
+              style={{ animationDelay: getStaggerDelay(index, 520, 140) }}
               aria-label={`Open Instagram post preview ${index + 1}`}
             >
               <img

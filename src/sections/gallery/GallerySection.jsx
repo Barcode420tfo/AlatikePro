@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
+import { getStaggerDelay, prefersReducedMotion } from '../../lib/motion'
 import heroWhatsapp from '../../../media/photos/hero-whatsapp-2026-04-15.jpeg'
 import ftpPortrait from '../../../media/photos/FTP02639.jpg.jpeg'
 import geleLook from '../../../media/photos/IMG_7209.JPEG'
@@ -24,6 +26,10 @@ import bridalShot07 from '../../../media/photos/bridal-shot-07.PNG'
 import bridalShot08 from '../../../media/photos/bridal-shot-08.PNG'
 import bridalShot09 from '../../../media/photos/bridal-shot-09.PNG'
 import bridalShot10 from '../../../media/photos/bridal-shot-10.PNG'
+import bridalShot11 from '../../../media/photos/bridal-shot-11.PNG'
+import bridalShot12 from '../../../media/photos/bridal-shot-12.PNG'
+import bridalShot13 from '../../../media/photos/bridal-shot-13.PNG'
+import bridalShot14 from '../../../media/photos/bridal-shot-14.PNG'
 import btsVideoMain from '../../../media/videos/IMG_1847.MP4'
 import bridalVideoFeature from '../../../media/videos/IMG_1918.MP4'
 import btsVideoAlt from '../../../media/videos/IMG_1831.MP4'
@@ -54,6 +60,10 @@ const mediaMap = {
   'bridal-shot-08': bridalShot08,
   'bridal-shot-09': bridalShot09,
   'bridal-shot-10': bridalShot10,
+  'bridal-shot-11': bridalShot11,
+  'bridal-shot-12': bridalShot12,
+  'bridal-shot-13': bridalShot13,
+  'bridal-shot-14': bridalShot14,
   'bts-video-main': btsVideoMain,
   'bridal-video-feature': bridalVideoFeature,
   'bts-video-alt': btsVideoAlt,
@@ -75,41 +85,40 @@ function getFilteredItems(filter) {
   return siteData.gallery.items.filter((item) => item.category === filter)
 }
 
+function getInitialVisibleCountForFilter(filter) {
+  if (filter === 'Bridal Glam') {
+    return 10
+  }
+
+  return siteData.gallery.initialVisibleCount
+}
+
 export function GallerySection() {
-  const [isVisible, setIsVisible] = useState(false)
+  const { ref: sectionRef, isVisible } = useRevealInView()
+  const reducedMotion = prefersReducedMotion()
   const [activeFilter, setActiveFilter] = useState(siteData.gallery.filters[0])
   const [pendingFilter, setPendingFilter] = useState(null)
   const [isFilterTransitioning, setIsFilterTransitioning] = useState(false)
-  const [visibleCount, setVisibleCount] = useState(siteData.gallery.initialVisibleCount)
+  const [visibleCount, setVisibleCount] = useState(() =>
+    getInitialVisibleCountForFilter(siteData.gallery.filters[0]),
+  )
   const [lightboxSlug, setLightboxSlug] = useState(null)
-  const [statCounts, setStatCounts] = useState({ 0: 0, 2: 0 })
-  const sectionRef = useRef(null)
+  const [statCounts, setStatCounts] = useState(() => (
+    reducedMotion
+      ? {
+          0: countTargets[0],
+          2: countTargets[2],
+        }
+      : { 0: 0, 2: 0 }
+  ))
   const filterTimeoutRef = useRef(null)
 
   useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
+    if (!isVisible) {
       return undefined
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.16 },
-    )
-
-    observer.observe(node)
-
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!isVisible) {
+    if (reducedMotion) {
       return undefined
     }
 
@@ -135,7 +144,7 @@ export function GallerySection() {
     })
 
     return () => timers.forEach((timer) => window.clearInterval(timer))
-  }, [isVisible])
+  }, [isVisible, reducedMotion])
 
   useEffect(() => {
     if (!lightboxSlug) {
@@ -177,6 +186,15 @@ export function GallerySection() {
       return
     }
 
+    if (reducedMotion) {
+      setActiveFilter(filter)
+      setVisibleCount(getInitialVisibleCountForFilter(filter))
+      setLightboxSlug(null)
+      setPendingFilter(null)
+      setIsFilterTransitioning(false)
+      return
+    }
+
     if (filterTimeoutRef.current) {
       window.clearTimeout(filterTimeoutRef.current)
     }
@@ -186,7 +204,7 @@ export function GallerySection() {
 
     filterTimeoutRef.current = window.setTimeout(() => {
       setActiveFilter(filter)
-      setVisibleCount(siteData.gallery.initialVisibleCount)
+      setVisibleCount(getInitialVisibleCountForFilter(filter))
       setLightboxSlug(null)
       setPendingFilter(null)
       setIsFilterTransitioning(false)
@@ -260,8 +278,12 @@ export function GallerySection() {
             <button
               key={`${activeFilter}-${item.slug}`}
               type="button"
-              className={`gallery-card gallery-card-${item.span} ${isVisible && !isFilterTransitioning ? 'is-visible' : ''}`}
-              style={{ animationDelay: `${index * 80}ms` }}
+              className={`gallery-card gallery-card-${item.span} ${
+                item.type === 'video' && index === visibleItems.length - 1 && visibleItems.length % 2 === 1
+                  ? 'gallery-card-mobile-centered'
+                  : ''
+              } ${isVisible && !isFilterTransitioning ? 'is-visible' : ''}`}
+              style={{ animationDelay: getStaggerDelay(index) }}
               onClick={() => setLightboxSlug(item.slug)}
             >
               <div className="gallery-card-media-wrap">
@@ -310,7 +332,7 @@ export function GallerySection() {
               type="button"
               className="gallery-load-more"
               onClick={() =>
-                setVisibleCount((current) => current + siteData.gallery.initialVisibleCount)
+                setVisibleCount((current) => current + getInitialVisibleCountForFilter(activeFilter))
               }
             >
               {siteData.gallery.loadMoreLabel}
@@ -321,33 +343,38 @@ export function GallerySection() {
 
       {activeLightboxItem ? (
         <div className="gallery-lightbox" role="dialog" aria-modal="true" aria-label={activeLightboxItem.title} onClick={() => setLightboxSlug(null)}>
-          <div className="gallery-lightbox-panel" onClick={(event) => event.stopPropagation()}>
-            <div className="gallery-lightbox-media">
-              <div className="gallery-lightbox-frame">
-                <button
-                  type="button"
-                  className="gallery-lightbox-close"
-                  onClick={() => setLightboxSlug(null)}
-                  aria-label="Close gallery preview"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                      d="M6 6l12 12M18 6L6 18"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.7"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
+          <div
+            className={`gallery-lightbox-panel ${
+              activeLightboxItem.type === 'video' ? 'gallery-lightbox-panel-video' : ''
+            }`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="gallery-lightbox-close"
+              onClick={() => setLightboxSlug(null)}
+              aria-label="Close gallery preview"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M6 6l12 12M18 6L6 18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
 
+            <div className={`gallery-lightbox-media ${activeLightboxItem.type === 'video' ? 'gallery-lightbox-media-video' : ''}`}>
+              <div className={`gallery-lightbox-frame ${activeLightboxItem.type === 'video' ? 'gallery-lightbox-frame-video' : ''}`}>
                 {activeLightboxItem.type === 'video' ? (
                   <video
                     src={mediaMap[activeLightboxItem.asset]}
                     controls
                     autoPlay
                     playsInline
-                    className="gallery-lightbox-asset"
+                    className="gallery-lightbox-asset gallery-lightbox-asset-video"
                   />
                 ) : (
                   <img
@@ -366,6 +393,15 @@ export function GallerySection() {
               </div>
 
               <div className="gallery-lightbox-actions">
+                <button
+                  type="button"
+                  className="gallery-lightbox-dismiss"
+                  onClick={() => setLightboxSlug(null)}
+                  aria-label="Close gallery preview"
+                >
+                  Close Preview
+                </button>
+
                 <button
                   type="button"
                   className="gallery-lightbox-nav"

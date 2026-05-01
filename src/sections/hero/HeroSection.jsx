@@ -1,21 +1,36 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { siteData } from '../../data/site'
+import { getStaggerDelay, prefersReducedMotion } from '../../lib/motion'
 import heroPhoto from '../../../media/photos/hero-whatsapp-2026-04-15.jpeg'
 
+const primaryRippleTimers = new WeakMap()
+const primaryRippleFrames = new WeakMap()
+
+function clearPrimaryRippleFrames(button) {
+  const frameIds = primaryRippleFrames.get(button)
+
+  if (!frameIds) {
+    return
+  }
+
+  frameIds.forEach((frameId) => window.cancelAnimationFrame(frameId))
+  primaryRippleFrames.delete(button)
+}
+
 export function HeroSection() {
-  const proofRef = useRef(null)
-  const [bridesCount, setBridesCount] = useState(0)
+  const reducedMotion = prefersReducedMotion()
+  const [bridesCount, setBridesCount] = useState(() =>
+    reducedMotion ? siteData.hero.proof.bridesCount : 0,
+  )
   const headlineWords = siteData.hero.headline.split(' ')
 
   useEffect(() => {
-    const node = proofRef.current
+    let frameId = 0
+    let startTimeoutId = 0
 
-    if (!node) {
+    if (reducedMotion) {
       return undefined
     }
-
-    let frameId = 0
-    let hasAnimated = false
 
     const animateCount = () => {
       const duration = 900
@@ -34,49 +49,80 @@ export function HeroSection() {
       frameId = window.requestAnimationFrame(step)
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          hasAnimated = true
-          animateCount()
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.55 },
-    )
-
-    observer.observe(node)
+    startTimeoutId = window.setTimeout(() => {
+      animateCount()
+    }, 1000)
 
     return () => {
-      observer.disconnect()
+      window.clearTimeout(startTimeoutId)
       window.cancelAnimationFrame(frameId)
     }
-  }, [])
+  }, [reducedMotion])
 
-  const setPulseOrigin = (event) => {
-    const bounds = event.currentTarget.getBoundingClientRect()
-    event.currentTarget.style.setProperty('--pulse-x', `${event.clientX - bounds.left}px`)
-    event.currentTarget.style.setProperty('--pulse-y', `${event.clientY - bounds.top}px`)
+  const triggerPrimaryRipple = (event) => {
+    const button = event.currentTarget
+    const bounds = button.getBoundingClientRect()
+    button.style.setProperty('--pulse-x', `${event.clientX - bounds.left}px`)
+    button.style.setProperty('--pulse-y', `${event.clientY - bounds.top}px`)
+
+    const existingTimer = primaryRippleTimers.get(button)
+    if (existingTimer) {
+      window.clearTimeout(existingTimer)
+    }
+
+    clearPrimaryRippleFrames(button)
+    button.classList.remove('is-rippling')
+
+    const outerFrame = window.requestAnimationFrame(() => {
+      const innerFrame = window.requestAnimationFrame(() => {
+        button.classList.add('is-rippling')
+        primaryRippleFrames.delete(button)
+      })
+
+      primaryRippleFrames.set(button, [outerFrame, innerFrame])
+    })
+
+    primaryRippleFrames.set(button, [outerFrame])
+
+    const timer = window.setTimeout(() => {
+      button.classList.remove('is-rippling')
+      clearPrimaryRippleFrames(button)
+      primaryRippleTimers.delete(button)
+    }, 600)
+
+    primaryRippleTimers.set(button, timer)
   }
 
   return (
     <section
       id="home"
-      className="hero-shell relative min-h-screen overflow-hidden"
+      className="hero-shell relative min-h-screen min-h-[100svh] overflow-hidden"
     >
-      <img
-        src={heroPhoto}
-        alt=""
-        className="hero-photo hero-photo-kenburns absolute inset-0 h-full w-full object-cover"
-        aria-hidden="true"
-      />
+      <div className="hero-photo-stage hero-photo-breathe absolute inset-0" aria-hidden="true">
+        <img
+          src={heroPhoto}
+          alt=""
+          className="hero-photo hero-photo-base hero-photo-kenburns absolute inset-0 h-full w-full object-cover"
+          decoding="async"
+          fetchPriority="high"
+          loading="eager"
+        />
+        <img
+          src={heroPhoto}
+          alt=""
+          className="hero-photo hero-photo-blur-overlay absolute inset-0 h-full w-full object-cover"
+          decoding="async"
+          fetchPriority="high"
+          loading="eager"
+        />
+      </div>
 
       <div className="hero-tint" aria-hidden="true" />
       <div className="hero-left-shade" aria-hidden="true" />
       <div className="hero-soften" aria-hidden="true" />
       <div className="hero-bottom-curve" aria-hidden="true" />
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-5 pb-20 pt-36 text-center sm:px-8 md:pb-24 md:pt-40 lg:px-14 xl:px-20">
+      <div className="relative z-10 flex min-h-screen min-h-[100svh] items-center justify-center px-5 pb-20 pt-36 text-center sm:px-8 md:pb-24 md:pt-40 lg:px-14 xl:px-20">
         <div className="hero-copy-panel mx-auto flex max-w-[860px] flex-col items-center">
           <div className="hero-kicker-reveal mb-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.24em] text-[#faf1ea]">
             <span className="block h-px w-10 bg-[#faf1ea]/70" />
@@ -89,7 +135,7 @@ export function HeroSection() {
               <span
                 key={`${word}-${index}`}
                 className="hero-headline-word"
-                style={{ animationDelay: `${300 + index * 75}ms` }}
+                style={{ animationDelay: getStaggerDelay(index, 400) }}
               >
                 {word}
                 {index < headlineWords.length - 1 ? '\u00A0' : ''}
@@ -103,10 +149,7 @@ export function HeroSection() {
             {siteData.hero.subtext}
           </p>
 
-          <div
-            ref={proofRef}
-            className="hero-proof-row mt-6"
-          >
+          <div className="hero-proof-row mt-6">
             <div className="hero-proof-pill hero-proof-pill-rating">
               <span className="hero-proof-stars" aria-hidden="true">
                 ★
@@ -126,16 +169,17 @@ export function HeroSection() {
               href={siteData.hero.primaryCta.href}
               target="_blank"
               rel="noreferrer"
-              className="cta-button cta-button-bright hero-primary-button justify-center"
-              onMouseEnter={setPulseOrigin}
-              onMouseMove={setPulseOrigin}
+              className="cta-button cta-button-bright hero-primary-button hero-cta-button justify-center"
+              style={{ animationDelay: getStaggerDelay(0, 1150, 60) }}
+              onPointerDown={triggerPrimaryRipple}
             >
               {siteData.hero.primaryCta.label}
             </a>
 
             <a
               href={siteData.hero.secondaryCta.href}
-              className="hero-secondary-button inline-flex items-center justify-center rounded-full"
+              className="hero-secondary-button hero-cta-button inline-flex items-center justify-center rounded-full"
+              style={{ animationDelay: getStaggerDelay(1, 1150, 60) }}
             >
               <span className="hero-secondary-button-label">{siteData.hero.secondaryCta.label}</span>
               <svg

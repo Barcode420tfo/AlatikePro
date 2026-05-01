@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
 import { siteData } from '../../data/site'
+import { useRevealInView } from '../../hooks/useRevealInView'
+import { getStaggerDelay } from '../../lib/motion'
 import planeIcon from '../../../media/photos/plane-icon.png'
+
+const TRUST_STAGGER_MS = 820
 
 const iconMap = {
   medal: (
@@ -51,30 +54,10 @@ const iconMap = {
 }
 
 export function TrustStrip() {
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef(null)
-
-  useEffect(() => {
-    const node = sectionRef.current
-
-    if (!node) {
-      return undefined
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.24 },
-    )
-
-    observer.observe(node)
-
-    return () => observer.disconnect()
-  }, [])
+  const { ref: sectionRef, isVisible } = useRevealInView({
+    offsetPx: 0,
+    threshold: 0.28,
+  })
 
   return (
     <section
@@ -87,7 +70,7 @@ export function TrustStrip() {
             <article
               key={item.title}
               className={`trust-item trust-reveal trust-tone-${item.tone} ${isVisible ? 'is-visible' : ''}`}
-              style={{ animationDelay: `${index * 90}ms` }}
+              style={{ '--trust-delay': getStaggerDelay(index, 0, TRUST_STAGGER_MS) }}
             >
               <div className="trust-blob">
                 <div className="trust-icon">{iconMap[item.icon]}</div>
