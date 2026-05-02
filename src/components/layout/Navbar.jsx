@@ -149,6 +149,19 @@ export function Navbar() {
             ))}
           </nav>
 
+          <a
+            href={siteData.bookingWhatsAppUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={`desktop-nav-cta animate-fade-up hidden justify-self-end transition-[transform,opacity] duration-300 lg:inline-flex ${
+              isHeaderSuppressed ? 'pointer-events-none' : 'opacity-100'
+            }`}
+            style={{ animationDelay: '80ms' }}
+          >
+            <span className="desktop-nav-cta-label">Book Now</span>
+            <span className="desktop-nav-cta-glow" aria-hidden="true" />
+          </a>
+
           <button
             type="button"
             className={`mobile-nav-toggle justify-self-end transition-[transform,opacity] duration-300 ${isMenuOpen ? 'is-open' : ''} ${

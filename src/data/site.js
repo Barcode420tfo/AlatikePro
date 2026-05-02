@@ -35,11 +35,11 @@ export const siteData = {
     },
     stats: [
       {
-        value: '10+',
-        label: 'Years Experience',
+        value: '10 yrs',
+        label: 'Experience',
       },
       {
-        value: 'International',
+        value: 'Intl.',
         label: 'Bookings',
       },
     ],
