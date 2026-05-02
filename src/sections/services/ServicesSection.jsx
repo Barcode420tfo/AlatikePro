@@ -169,6 +169,7 @@ function getMinBookingDateForService(serviceName) {
 }
 
 export function ServicesSection() {
+  const [isSmallScreen, setIsSmallScreen] = useState(false)
   const bookingEnabled = siteData.services.booking.enabled !== false
   const bookingRecipient = siteData.services.booking.recipientEmail
   const bookingSubmitUrl = `https://formsubmit.co/ajax/${bookingRecipient}`
@@ -203,6 +204,7 @@ export function ServicesSection() {
     offsetPx: 0,
     threshold: 0.2,
   })
+  const isSectionVisible = isVisible || isSmallScreen
   const submitAbortRef = useRef(null)
   const minBookingDate = getMinBookingDateForService(formState.preferredService)
   const isDateSelectionTooEarly =
@@ -212,6 +214,20 @@ export function ServicesSection() {
     : formState.preferredService === WALK_IN_SERVICE_LABEL
       ? 'Store Visit / Walk-in bookings should be made 1 or 2 days ahead of your visit date.'
       : null
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 767px)')
+    const updateScreenMode = () => setIsSmallScreen(mediaQuery.matches)
+
+    updateScreenMode()
+    mediaQuery.addEventListener('change', updateScreenMode)
+
+    return () => mediaQuery.removeEventListener('change', updateScreenMode)
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -334,7 +350,7 @@ export function ServicesSection() {
     >
       <div className="mx-auto max-w-[1280px]">
         <div className="services-intro">
-          <div className={`services-kicker ${isVisible ? 'is-visible' : ''}`} aria-label={siteData.services.label}>
+          <div className={`services-kicker ${isSectionVisible ? 'is-visible' : ''}`} aria-label={siteData.services.label}>
             <span className="services-kicker-line" aria-hidden="true" />
             <span className="services-kicker-gem" aria-hidden="true" />
             <span className="services-kicker-text">{siteData.services.label}</span>
@@ -346,7 +362,7 @@ export function ServicesSection() {
             {siteData.services.headlineLines.map((line, index) => (
               <span className="services-heading-mask" key={line}>
                 <span
-                  className={`services-heading-line ${isVisible ? 'is-visible' : ''}`}
+                  className={`services-heading-line ${isSectionVisible ? 'is-visible' : ''}`}
                   style={{ animationDelay: getStaggerDelay(index, 140) }}
                 >
                   {line}
@@ -355,17 +371,18 @@ export function ServicesSection() {
             ))}
           </div>
 
-          <p className={`services-subtext ${isVisible ? 'is-visible' : ''}`}>
+          <p className={`services-subtext ${isSectionVisible ? 'is-visible' : ''}`}>
             {siteData.services.subtext}
           </p>
         </div>
 
-        <span className={`services-divider ${isVisible ? 'is-visible' : ''}`} aria-hidden="true" />
+        <span className={`services-divider ${isSectionVisible ? 'is-visible' : ''}`} aria-hidden="true" />
 
         <div className="services-card-grid">
           {siteData.services.items.map((service, index) => {
             const isFlagship = index === 0
             const isAlwaysOpen = isFlagship || service.slug === 'beauty-training'
+            const hasHoverMediaReveal = index === 1 || index === 2
             const isMobileOpen = expandedServiceSlug === service.slug
             const stageDelay = getStaggerDelay(index, 540, SERVICES_CARD_STAGGER_MS)
             const waveOffset = serviceWaveOffsets[index] ?? 0
@@ -374,7 +391,7 @@ export function ServicesSection() {
             return (
               <article
                 key={service.slug}
-                className={`service-card service-card-${service.theme} ${isFlagship ? 'service-card-flagship' : ''} ${isAlwaysOpen ? 'service-card-always-open' : ''} ${isMobileOpen ? 'service-card-mobile-open' : ''} ${isVisible ? 'is-visible' : ''}`}
+                className={`service-card service-card-${service.theme} ${isFlagship ? 'service-card-flagship' : ''} ${isAlwaysOpen ? 'service-card-always-open' : ''} ${hasHoverMediaReveal ? 'service-card-hover-media' : ''} ${isMobileOpen ? 'service-card-mobile-open' : ''} ${isSectionVisible ? 'is-visible' : ''}`}
                 style={{
                   animationDelay: stageDelay,
                   '--service-wave-x': `${waveOffset}px`,
@@ -420,7 +437,7 @@ export function ServicesSection() {
                         href={`${siteData.whatsappUrl}?text=${encodeURIComponent(service.whatsappMessage)}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="service-card-whatsapp"
+                        className="service-card-quick-whatsapp"
                         aria-label={`WhatsApp enquiry for ${service.title}`}
                       >
                         {whatsappIcon}
@@ -468,7 +485,7 @@ export function ServicesSection() {
           })}
         </div>
 
-        <div className={`services-info-strip ${isVisible ? 'is-visible' : ''}`}>
+        <div className={`services-info-strip ${isSectionVisible ? 'is-visible' : ''}`}>
           {siteData.services.infoStrip.map((item, index) => (
             <a
               key={item.label}
@@ -487,7 +504,7 @@ export function ServicesSection() {
 
         <section
           id="booking"
-          className={`booking-shell ${isVisible ? 'is-visible' : ''}`}
+          className={`booking-shell ${isSectionVisible ? 'is-visible' : ''}`}
           aria-labelledby="booking-title"
         >
           <div className="booking-copy">

@@ -204,7 +204,7 @@ export function ContactSection() {
                   <span className="contact-map-placeholder-area">Bajulaiye, Shomolu</span>
                 </div>
                 <p className="contact-map-placeholder-note">
-                  The live map is optional so the page stays fast on slower connections.
+                  Open the live map whenever you would like a closer view of the studio location.
                 </p>
               </div>
             )}
